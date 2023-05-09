@@ -7,8 +7,22 @@ interface PanZoomState {
   isPanning: boolean;
   startPanPoint: { x: number; y: number };
 }
+
+export interface PanZoomContext {
+  transformPoint: (x: number, y: number) => { x: number; y: number };
+}
+
+export interface EventHandlerOverrides {
+  handleMouseWheel: (e: WheelEvent, ctx: PanZoomContext) => boolean;
+  handleMouseDown: (e: MouseEvent, ctx: PanZoomContext) => boolean;
+  handleMouseUp: (e: MouseEvent, ctx: PanZoomContext) => boolean;
+  handleMouseMove: (e: MouseEvent, ctx: PanZoomContext) => boolean;
+  handleDblClick: (e: MouseEvent, ctx: PanZoomContext) => boolean;
+}
+
 export const usePanZoomCanvas = (
-  drawContentFn: (ctx: CanvasRenderingContext2D) => void
+  drawContentFn: (ctx: CanvasRenderingContext2D) => void,
+  eventHandlerOverrides?: Partial<EventHandlerOverrides>
 ) => {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const [state, setState] = React.useState<PanZoomState>({
@@ -18,6 +32,18 @@ export const usePanZoomCanvas = (
     isPanning: false,
     startPanPoint: { x: 0, y: 0 },
   });
+
+  const matrix = React.useMemo(
+    () =>
+      new DOMMatrix([state.scale, 0, 0, state.scale, state.panX, state.panY]),
+    [state.panX, state.panY, state.scale]
+  );
+  const transformPoint = React.useCallback(
+    (x: number, y: number): { x: number; y: number } => {
+      return matrix.transformPoint({ x, y });
+    },
+    [matrix]
+  );
 
   React.useEffect(() => {
     const canvas = canvasRef.current;
@@ -41,6 +67,9 @@ export const usePanZoomCanvas = (
 
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
+      if (eventHandlerOverrides?.handleMouseWheel?.(e, { transformPoint })) {
+        return;
+      }
       const scaleFactor = e.deltaY < 0 ? 1.1 : 0.9;
       const offsetX = e.clientX - canvas.getBoundingClientRect().left;
       const offsetY = e.clientY - canvas.getBoundingClientRect().top;
@@ -56,6 +85,9 @@ export const usePanZoomCanvas = (
 
     const handleMouseDown = (e: MouseEvent) => {
       e.preventDefault();
+      if (eventHandlerOverrides?.handleMouseDown?.(e, { transformPoint })) {
+        return;
+      }
       setState((prevState) => {
         return {
           ...prevState,
@@ -67,6 +99,9 @@ export const usePanZoomCanvas = (
 
     const handleMouseMove = (e: MouseEvent) => {
       e.preventDefault();
+      if (eventHandlerOverrides?.handleMouseMove?.(e, { transformPoint })) {
+        return;
+      }
       setState((prevState) => {
         if (!prevState.isPanning) return prevState;
         const { scale, panX, panY, startPanPoint } = prevState;
@@ -81,6 +116,9 @@ export const usePanZoomCanvas = (
 
     const handleMouseUp = (e: MouseEvent) => {
       e.preventDefault();
+      if (eventHandlerOverrides?.handleMouseUp?.(e, { transformPoint })) {
+        return;
+      }
       setState((prevState) => {
         return {
           ...prevState,
@@ -91,6 +129,9 @@ export const usePanZoomCanvas = (
 
     const handleDblClick = (e: MouseEvent) => {
       e.preventDefault();
+      if (eventHandlerOverrides?.handleDblClick?.(e, { transformPoint })) {
+        return;
+      }
       setState({
         scale: 1,
         panX: 0,

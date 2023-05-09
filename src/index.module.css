@@ -1,11 +1,11 @@
 @font-face {
   font-family: "ColfaxAI";
-  src: url(https://cdn.openai.com/API/fonts/ColfaxAIRegular.woff2)
-      format("woff2"),
+  src: url(https://cdn.openai.com/API/fonts/ColfaxAIRegular.woff2) format("woff2"),
     url(https://cdn.openai.com/API/fonts/ColfaxAIRegular.woff) format("woff");
   font-weight: normal;
   font-style: normal;
 }
+
 @font-face {
   font-family: "ColfaxAI";
   src: url(https://cdn.openai.com/API/fonts/ColfaxAIBold.woff2) format("woff2"),
@@ -13,6 +13,7 @@
   font-weight: bold;
   font-style: normal;
 }
+
 .main,
 .main input {
   font-size: 16px;
@@ -20,15 +21,18 @@
   color: #9ca1b7;
   font-family: "ColfaxAI", Helvetica, sans-serif;
 }
+
 .main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 60px;
+  padding-top: 20px;
 }
+
 .main .icon {
   width: 34px;
 }
+
 .main h3 {
   font-size: 32px;
   line-height: 40px;
@@ -36,11 +40,13 @@
   color: #c8ceda;
   margin: 16px 0 40px;
 }
+
 .main form {
   display: flex;
   flex-direction: column;
   width: 320px;
 }
+
 .main input[type="text"] {
   padding: 12px 16px;
   border: 1px solid #71a195;
@@ -48,10 +54,12 @@
   outline-color: #15a380;
   min-width: 400px;
 }
+
 .main ::placeholder {
   color: #646470;
   opacity: 1;
 }
+
 .main input[type="submit"] {
   padding: 12px;
   color: #000000;
@@ -62,23 +70,71 @@
   cursor: pointer;
   margin-left: 8px;
 }
+
 .main .result {
   font-weight: bold;
   margin-top: 40px;
 }
 
-.row{
+.row {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.column{
+
+.column {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
-.fill{
+
+.fill {
   flex: 1;
   align-self: stretch;
+}
+
+.editor {
+  display: flex;
+  flex: 1;
+  padding: 20px;
+  margin: 20px;
+  justify-content: space-evenly;
+  align-self: stretch;
+  border: 1px solid grey;
+  align-items: stretch;
+}
+
+.canvasContainer {
+  flex: 1;
+  overflow: hidden;
+  border: 1px solid #151515;
+  position: relative;
+}
+
+.canvasEditor {
+  position: absolute;
+  top: 50px;
+}
+
+.canvasToolbar {
+  height: 50px;
+  background-color: #151515;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0 10px;
+}
+
+.toolbarButton {
+  margin: 0 10px;
+  cursor: pointer;
+}
+
+.toolbarButton:hover {
+  color: white;
+}
+
+.toolbarButton:active {
+  color: #10a37f;
 }
